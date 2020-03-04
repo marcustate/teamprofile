@@ -27,7 +27,7 @@ function appMain() {
                 if (answer !== "") {
                     return true;
                 }
-                return "Enter at least one character.";
+                return " Please input at least one character.";
             }
 
         },
@@ -42,7 +42,7 @@ function appMain() {
                 if (pass) {
                     return true;
                 }
-                return "Please enter a number greater than zero";
+                return "Please input a number greater than zero";
             }
         },
 
@@ -57,7 +57,7 @@ function appMain() {
                 if (pass) {
                     return true;
                 }
-                return "Please enter a vaild email address";
+                return "Please input a vaild email address";
             }
 
         },
@@ -72,7 +72,7 @@ function appMain() {
                 if (pass) {
                     return true;
                 }
-                return "Please enter a number greater than zero";
+                return "Please input a number greater than zero";
             }
         }
     ])
@@ -117,7 +117,7 @@ function addEngineer() {
                 if (answer !== '') {
                     return true;
                 }
-                return "Please enter at least one character.";
+                return "Please input at least one character.";
             }
         },
         {
@@ -136,7 +136,7 @@ function addEngineer() {
                         return true;
                     }
                 }
-                return "Please enter a number greater than zero.";
+                return "Please input a number greater than zero.";
             }
         },
         {
@@ -150,7 +150,7 @@ function addEngineer() {
                 if (pass) {
                     return true;
                 }
-                return "Pleaser enter a valid email address";
+                return "Pleaser input a valid email address";
             }
         },
         {
@@ -161,7 +161,7 @@ function addEngineer() {
                 if (answer !== "") {
                     return true;
                 }
-                return "Please enter at least one character.";
+                return "Please input at least one character.";
             }
         }
     ])
@@ -173,5 +173,75 @@ function addEngineer() {
     teamMembers.push(engineer);
     idArray.push(answers.engineerId);
     createTeam();
+}
+
+function addIntern() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "internName",
+            message: "What is your Intern's name",
+            validate: answers => {
+                if (answers !== ""){
+                    return true;
+                }
+                return "Please input at least one character."
+            }
+        },
+        {
+            type: "input",
+            name: "internId",
+            message: "What is your intern's ID",
+            validate: answer => {
+                const pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+
+                if (pass) {
+                    if (idArray.includes(answer)) {
+                        return "This ID is already in use. Please select a ID.";
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return "Please enter a number greater than zero.";
+
+            }
+        },
+        {
+            type: "input",
+            name: "internEmail",
+            message: "what is your email?",
+            validate: answer => {
+                const pass = answer.match(
+                    /\S+@\S+\.\S+/
+                );
+                    if (pass) {
+                        return true;
+                    }
+                    return "Please input a valid email address.";
+            }
+        },
+        {
+            type: "input",
+            name: "internSchool",
+            message: "What is your intern's school?",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please input at least one character.";
+            }
+        }
+    ])
+    .then(answers => {
+        const intern = new Intern (
+            answers.internName, answers.internId, answers.internEmail, answers.internSchool
+        );
+        teamMembers.push(intern);
+        idArray.push(answers.internId);
+        createTeam();
+    })
 }
 
