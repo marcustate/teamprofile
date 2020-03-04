@@ -17,6 +17,8 @@ const idArray = [];
 function appMain() {
     console.log("Build your team");
     inquirer.prompt([
+        //use if statement with answer !== "" when dealing with names
+        //use RegEx for characters and numbers
         {
             type: "input",
             name: "managerName",
@@ -60,7 +62,7 @@ function appMain() {
 
         },
         {
-            type:"input",
+            type: "input",
             name: "managerOfficeNumber",
             message: "What is your manager's office number?",
             validate: answer => {
@@ -74,33 +76,102 @@ function appMain() {
             }
         }
     ])
-    .then(answers => {
-        const manager = new Manager(answers.managerName, answers.managerEmail, answers.managerId, answers.managerOfficeNumber);
-        teamMembers.push(manager);
-        idArray.push(answers.managerId);
-        createTeam();
-    });
+        .then(answers => {
+            const manager = new Manager(answers.managerName, answers.managerEmail, answers.managerId, answers.managerOfficeNumber);
+            teamMembers.push(manager);
+            idArray.push(answers.managerId);
+            createTeam();
+        });
 }
 
 function createTeam() {
     inquirer.prompt([
-       {
-           type: "list",
-           name: "memberChoice",
-           message: "Which type of team member would you like to add"?,
-           choices: ["Engineer", "Intern", "I do not want to add anymore team members"]
-       } 
-    ])
-    .then(userChoice => {
-        switch (userChoice.memberChoice) {
-            case "Engineer":
-                addEngineer();
-                break;
-            case "Intern":
-                addIntern();
-                break;
-            default:
-                buildTeam();        
+        {
+            type: "list",
+            name: "memberChoice",
+            message: "Which type of team member would you like to add?",
+            choices: ["Engineer", "Intern", "I do not want to add anymore team members"]
         }
-    })
+    ])
+        .then(userChoice => {
+            switch (userChoice.memberChoice) {
+                case "Engineer":
+                    addEngineer();
+                    break;
+                case "Intern":
+                    addIntern();
+                    break;
+                default:
+                    buildTeam();
+            }
+        })
 }
+
+function addEngineer() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "engineerName",
+            message: "What is your engineer's name?",
+            validate: answer => {
+                if (answer !== '') {
+                    return true;
+                }
+                return "Please enter at least one character.";
+            }
+        },
+        {
+            type: "input",
+            name: "engineerId",
+            message: "What is your engineer's id?",
+            validate: answer => {
+                const pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                    if (idArray.includes(answer)) {
+                        return "This ID is already in use. Please select another ID.";
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return "Please enter a number greater than zero.";
+            }
+        },
+        {
+            type: "input",
+            name: "engineerEmail",
+            message: "what is your engineer's email",
+            validate: answer => {
+                const pass = answer.match(
+                    /\S+@\S+\.\S+/
+                );
+                if (pass) {
+                    return true;
+                }
+                return "Pleaser enter a valid email address";
+            }
+        },
+        {
+            type: "input",
+            name: "engineerGithub",
+            message: "what is your engineer's Github username?",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter at least one character.";
+            }
+        }
+    ])
+    .then(answers => {
+        const engineer = new Engineer(
+            answers.engineerName, answers.engineerId, answers.engineerEmail, answers.engineerGithub
+        );
+    })
+    teamMembers.push(engineer);
+    idArray.push(answers.engineerId);
+    createTeam();
+}
+
